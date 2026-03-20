@@ -15,7 +15,7 @@ abstract class TaskDatabase: RoomDatabase() {
         private var Instance: TaskDatabase? = null
         fun getTaskDatabase(context: Context): TaskDatabase {
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, TaskDatabase::class.java, "item_database")
+                Room.databaseBuilder(context, TaskDatabase::class.java, "task_database")
                     .build()
                     .also {
                         Instance = it

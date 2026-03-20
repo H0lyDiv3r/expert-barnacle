@@ -18,22 +18,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.sqlpractice.Data.AppDataContainer
 import com.example.sqlpractice.ui.theme.SqlPracticeTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val appContainer = AppDataContainer(this)
+        val taskViewModel = TaskViewModel(appContainer.tasksRepository)
         setContent {
             SqlPracticeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        taskViewModel = taskViewModel
                     )
                 }
             }
@@ -42,14 +49,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, modifier: Modifier = Modifier, taskViewModel: TaskViewModel) {
     var title by remember { mutableStateOf("") }
     var description by remember {mutableStateOf("")}
     var accomplished by remember {mutableStateOf(false)}
-    fun saveTask (title:String,description:String,accomplished:Boolean) {
-        println("deviant art go brrrrrrrrrrrrr ${title + description + accomplished}")
-        tasksRepo
-    }
+    val scope = rememberCoroutineScope()
     Column {
 
         OutlinedTextField(
@@ -75,7 +79,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         Button (
             onClick = {
-                saveTask(title,description,accomplished)
+                scope.launch {
+                    taskViewModel.saveItem(title = title,desc = description,acc = accomplished)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -90,6 +96,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     SqlPracticeTheme {
-        Greeting("Android")
+//        Greeting("Android")
     }
 }

@@ -12,9 +12,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,6 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.sqlpractice.Data.AppDataContainer
 import com.example.sqlpractice.Data.Task
 import com.example.sqlpractice.ui.theme.SqlPracticeTheme
@@ -42,19 +52,44 @@ class MainActivity : ComponentActivity() {
         val appContainer = AppDataContainer(this)
         val taskViewModel = TaskViewModel(appContainer.tasksRepository)
         val taskListViewModel = TaskListViewModel(appContainer.tasksRepository)
+
         setContent {
             SqlPracticeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column() {
-                        Greeting(
-                            name = "Android",
-                            modifier = Modifier.padding(innerPadding),
-                            taskViewModel = taskViewModel
-                        )
-                        TaskList(taskListViewModel)
+                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+                    TopBar()
+                }) { innerPadding ->
+                    Column(modifier = Modifier.padding(innerPadding)) {
+                        App(taskListViewModel,taskViewModel)
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun App(taskListViewModel: TaskListViewModel,taskViewModel: TaskViewModel){
+    val navController = rememberNavController()
+    NavHost (
+        navController = navController,
+        startDestination = "tasks"
+    ) {
+        composable ("tasks") {
+            TaskScreen(taskListViewModel)
+        }
+        composable (route = "task_form"){
+            Greeting(name="android",taskViewModel=taskViewModel)
+        }
+    }
+
+}
+
+@Composable
+fun TaskScreen(viewModel: TaskListViewModel){
+    Column( modifier = Modifier.padding(8.dp).fillMaxSize()) {
+        TaskList(viewModel=viewModel)
+        FloatingActionButton(onClick = {}, modifier = Modifier.align(Alignment.End)) {
+            Icon(Icons.Filled.Add, "Floating action button")
         }
     }
 }
@@ -65,7 +100,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier, taskViewModel: TaskVie
     var description by remember {mutableStateOf("")}
     var accomplished by remember {mutableStateOf(false)}
     val scope = rememberCoroutineScope()
-    Column {
+    Column (modifier=Modifier.padding(8.dp)) {
 
         OutlinedTextField(
             value = title,
@@ -104,9 +139,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier, taskViewModel: TaskVie
 }
 
 @Composable
-fun TaskList(viewModel: TaskListViewModel){
+fun TaskList(viewModel: TaskListViewModel, modifier: Modifier = Modifier){
     val taskListState by viewModel.taskListUiState.collectAsState()
-    Column() {
+    Column(modifier= modifier) {
 
         if(taskListState.taskList.size <= 0){
             Text("there is no tasks")
@@ -125,7 +160,7 @@ fun TaskList(viewModel: TaskListViewModel){
 @Composable
 fun TaskItem(task:Task){
     Card(
-    modifier = Modifier.fillMaxWidth()
+    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
@@ -144,6 +179,15 @@ fun TaskItem(task:Task){
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar() {
+    CenterAlignedTopAppBar(title = {
+        Text("tasks for the day")
+    })
 }
 
 @Preview(showBackground = true)

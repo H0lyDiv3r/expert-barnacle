@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    val nav_version = "2.9.7" // or latest stable matching your AGP
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
 
     implementation("androidx.room:room-runtime:$room_version")

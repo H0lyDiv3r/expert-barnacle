@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TasksRepository {
 
-    fun getAllTasksStream (): Flow<List<Task?>>
+    fun getAllTasksStream (): Flow<List<Task>>
 
-    fun getTaskStream (id: Int): Flow<Task?>
+    fun getTaskStream (id: Int): Flow<Task>
 
     suspend fun insertTask (task: Task)
 

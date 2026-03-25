@@ -15,7 +15,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,6 +28,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -75,6 +82,26 @@ fun App(taskListViewModel: TaskListViewModel,taskViewModel: TaskViewModel){
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopBar(navController)
+    }, bottomBar = {
+
+        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+//            Destination.entries.forEachIndexed { index, destination ->
+                NavigationBarItem(
+                    selected = true,
+                    onClick = {
+
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Filled.Home,
+                            contentDescription = "home"
+                        )
+                    },
+                    label = { Text("some where") }
+                )
+//            }
+        }
+
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
 
@@ -232,6 +259,26 @@ fun TopBar(navController: NavController) {    // This state drives recomposition
                         contentDescription = "Back"
                     )
                 }
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description"
+                )
+            }
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description"
+                )
+            }
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description"
+                )
             }
         }
 
